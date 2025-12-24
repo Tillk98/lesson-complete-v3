@@ -25,6 +25,37 @@
   pointer-events: none;
 }
 
+.primaryButtonWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.scrollToTopButton {
+  position: absolute;
+  top: -48px;
+  left: 0;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-xs);
+  padding: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  width: 40px;
+  height: 40px;
+  z-index: 1;
+  color: var(--text-default);
+}
+
+.scrollToTopButton:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 .primaryButton {
   width: 100%;
   background-color: var(--color-primary);

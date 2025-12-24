@@ -61,7 +61,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       setAnimationPhase('stats')
     }, 2000)
 
-    // Phase 3: Typing indicator (1s delay after stats)
+    // Phase 3: Typing indicator for first message (1s delay after stats)
     const timer3 = setTimeout(() => {
       setShowTyping(true)
       setAnimationPhase('typing')
@@ -84,8 +84,14 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       ])
     }, 4000)
 
-    // Phase 5: Second message (insight)
+    // Phase 5: Typing indicator for second message
     const timer5 = setTimeout(() => {
+      setShowTyping(true)
+    }, 5000)
+
+    // Phase 6: Second message (insight) appears
+    const timer6 = setTimeout(() => {
+      setShowTyping(false)
       setChatMessages((prev) => [
         ...prev,
         {
@@ -99,10 +105,16 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           ),
         },
       ])
-    }, 5500)
+    }, 6000)
 
-    // Phase 6: Chart message
-    const timer6 = setTimeout(() => {
+    // Phase 7: Typing indicator for third message
+    const timer7 = setTimeout(() => {
+      setShowTyping(true)
+    }, 7000)
+
+    // Phase 8: Chart message appears
+    const timer8 = setTimeout(() => {
+      setShowTyping(false)
       setChatMessages((prev) => [
         ...prev,
         {
@@ -115,10 +127,16 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           ),
         },
       ])
-    }, 7000)
+    }, 8000)
 
-    // Phase 7: Improvement message
-    const timer7 = setTimeout(() => {
+    // Phase 9: Typing indicator for fourth message
+    const timer9 = setTimeout(() => {
+      setShowTyping(true)
+    }, 9000)
+
+    // Phase 10: Improvement message appears
+    const timer10 = setTimeout(() => {
+      setShowTyping(false)
       setChatMessages((prev) => [
         ...prev,
         {
@@ -131,7 +149,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           ),
         },
       ])
-    }, 8500)
+    }, 10000)
 
     return () => {
       clearTimeout(timer1)
@@ -141,33 +159,12 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       clearTimeout(timer5)
       clearTimeout(timer6)
       clearTimeout(timer7)
+      clearTimeout(timer8)
+      clearTimeout(timer9)
+      clearTimeout(timer10)
     }
   }, [])
 
-  // Auto-scroll to center new messages when they appear
-  useEffect(() => {
-    if (chatMessages.length > 0) {
-      // Small delay to ensure DOM is updated
-      setTimeout(() => {
-        const lastMessageId = chatMessages[chatMessages.length - 1].id
-        const lastMessageElement = messageRefs.current.get(lastMessageId)
-        
-        if (lastMessageElement) {
-          // Center the message in the viewport, accounting for bottom actions
-          const elementRect = lastMessageElement.getBoundingClientRect()
-          const absoluteElementTop = elementRect.top + window.pageYOffset
-          const bottomActionsHeight = 180 // Approximate height of bottom actions
-          const availableHeight = window.innerHeight - bottomActionsHeight
-          const middle = absoluteElementTop - (availableHeight / 2) + (elementRect.height / 2)
-          
-          window.scrollTo({
-            top: Math.max(0, middle),
-            behavior: 'smooth'
-          })
-        }
-      }, 200)
-    }
-  }, [chatMessages])
 
   // Scroll detection for header breadcrumb and bottom actions
   useEffect(() => {
@@ -223,8 +220,6 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       
       <div className={styles.content} ref={chatSectionRef}>
         <div className={styles.chatSection}>
-          {showTyping && <TypingIndicator />}
-          
           {chatMessages.map((message, index) => (
             <div
               key={message.id}
@@ -241,6 +236,8 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
               </ChatMessage>
             </div>
           ))}
+          
+          {showTyping && <TypingIndicator />}
           
           {/* Scroll anchor at the bottom */}
           <div ref={chatEndRef} />
