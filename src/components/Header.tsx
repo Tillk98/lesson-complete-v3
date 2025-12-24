@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './Header.module.css'
 import lynxIcon from '../assets/lynx-icon.png'
+import coinIcon from '../assets/coin-icon.png'
 
 interface HeaderProps {
   showBreadcrumb?: boolean
@@ -8,9 +9,13 @@ interface HeaderProps {
     title: string
     subtitle: string
   }
+  stats?: {
+    coins: number
+    coinsTotal: number
+  }
 }
 
-const Header: React.FC<HeaderProps> = ({ showBreadcrumb = false, lesson }) => {
+const Header: React.FC<HeaderProps> = ({ showBreadcrumb = false, lesson, stats }) => {
   return (
     <div className={styles.header}>
       <div className={styles.headerContent}>
@@ -44,19 +49,36 @@ const Header: React.FC<HeaderProps> = ({ showBreadcrumb = false, lesson }) => {
       
       {showBreadcrumb && (
         <div className={`${styles.lessonBreadcrumb} ${styles.breadcrumbVisible}`}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" fill="#42a564" stroke="white" strokeWidth="2" />
-            <path
-              d="M8 12l2 2 4-4"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className={styles.breadcrumbText}>
-            {lesson?.title || 'Prendre un Café'} • <span className={styles.breadcrumbSubtext}>{lesson?.subtitle || 'LingQ Mini Stories - French'}</span>
-          </span>
+          <div className={styles.breadcrumbLeft}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="#42a564" stroke="white" strokeWidth="2" />
+              <path
+                d="M8 12l2 2 4-4"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className={styles.breadcrumbText}>
+              {lesson?.title || 'Prendre un Café'}
+            </span>
+          </div>
+          <button className={styles.coinsLink}>
+            <img src={coinIcon} alt="Coins" className={styles.coinIcon} />
+            <span className={styles.coinsText}>
+              {stats?.coins || 15}/{stats?.coinsTotal || 100}
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M9 18l6-6-6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       )}
     </div>

@@ -207,7 +207,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
 
   return (
     <div className={styles.container}>
-      <Header showBreadcrumb={showHeaderBreadcrumb} lesson={lesson} />
+      <Header showBreadcrumb={showHeaderBreadcrumb} lesson={lesson} stats={stats} />
       
       {showCelebration && <CelebrationAnimation />}
       
