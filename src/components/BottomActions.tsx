@@ -6,11 +6,16 @@ import reviewIcon from '../assets/Review Icon.png'
 
 interface BottomActionsProps {
   visible?: boolean
+  onScrollToTop?: () => void
 }
 
-const BottomActions: React.FC<BottomActionsProps> = ({ visible = true }) => {
+const BottomActions: React.FC<BottomActionsProps> = ({ visible = true, onScrollToTop }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Disable auto-scroll when user clicks up arrow
+    if (onScrollToTop) {
+      onScrollToTop()
+    }
   }
 
   return (

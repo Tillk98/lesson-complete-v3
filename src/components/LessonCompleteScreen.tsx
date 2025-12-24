@@ -43,11 +43,13 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' }>>([])
   const [showHeaderBreadcrumb, setShowHeaderBreadcrumb] = useState(false)
   const [showBottomActions, setShowBottomActions] = useState(true)
+  const [disableAutoScroll, setDisableAutoScroll] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
   const chatSectionRef = useRef<HTMLDivElement>(null)
   const topSectionRef = useRef<HTMLDivElement>(null)
   const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map())
   const lastScrollY = useRef(0)
+  const isAutoScrolling = useRef(false)
 
   useEffect(() => {
     // Phase 1: Celebration animation (1.5s)
@@ -146,13 +148,16 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
 
   // Auto-scroll to center new messages when they appear
   useEffect(() => {
-    if (chatMessages.length > 0) {
+    if (chatMessages.length > 0 && !disableAutoScroll) {
       // Small delay to ensure DOM is updated
       setTimeout(() => {
         const lastMessageId = chatMessages[chatMessages.length - 1].id
         const lastMessageElement = messageRefs.current.get(lastMessageId)
         
         if (lastMessageElement) {
+          // Mark that we're auto-scrolling
+          isAutoScrolling.current = true
+          
           // Center the message in the viewport, accounting for bottom actions
           const elementRect = lastMessageElement.getBoundingClientRect()
           const absoluteElementTop = elementRect.top + window.pageYOffset
@@ -164,10 +169,15 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
             top: Math.max(0, middle),
             behavior: 'smooth'
           })
+          
+          // Reset auto-scrolling flag after scroll animation completes
+          setTimeout(() => {
+            isAutoScrolling.current = false
+          }, 500)
         }
       }, 200)
     }
-  }, [chatMessages])
+  }, [chatMessages, disableAutoScroll])
 
   // Scroll detection for header breadcrumb and bottom actions
   useEffect(() => {
@@ -189,6 +199,10 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       } else if (currentScrollY < lastScrollY.current) {
         // Scrolling up - hide buttons
         setShowBottomActions(false)
+        // If user scrolls up while auto-scrolling, disable auto-scroll
+        if (isAutoScrolling.current) {
+          setDisableAutoScroll(true)
+        }
       } else if (currentScrollY > lastScrollY.current) {
         // Scrolling down - show buttons
         setShowBottomActions(true)
@@ -247,7 +261,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         </div>
       </div>
       
-      <BottomActions visible={showBottomActions} />
+      <BottomActions visible={showBottomActions} onScrollToTop={() => setDisableAutoScroll(true)} />
     </div>
   )
 }
