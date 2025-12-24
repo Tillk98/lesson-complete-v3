@@ -1,4 +1,3 @@
-import React from 'react'
 import LessonCompleteScreen from './components/LessonCompleteScreen'
 import './App.css'
 
