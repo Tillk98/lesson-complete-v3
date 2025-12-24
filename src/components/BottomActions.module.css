@@ -1,0 +1,109 @@
+.container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  z-index: 3;
+  max-width: 393px;
+  margin: 0 auto;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.container.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.container.hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.primaryButton {
+  width: 100%;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(66, 165, 100, 0.3);
+}
+
+.primaryButton:hover {
+  background-color: #3a9457;
+}
+
+.primaryButton:active {
+  transform: scale(0.98);
+}
+
+.primaryButton span {
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-on-action);
+}
+
+.primaryButton svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-on-action);
+  flex-shrink: 0;
+}
+
+.secondaryActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+}
+
+.secondaryButton {
+  background-color: var(--background-default);
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+  min-width: 0;
+}
+
+.secondaryButton:hover {
+  background-color: #e9ecef;
+}
+
+.buttonIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.buttonText {
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-default);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
