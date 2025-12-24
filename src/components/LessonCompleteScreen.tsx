@@ -183,11 +183,11 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       }
       
       // Handle bottom actions visibility based on scroll direction
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        // Scrolling down - hide buttons
+      if (currentScrollY < lastScrollY.current && currentScrollY > 100) {
+        // Scrolling up - hide buttons
         setShowBottomActions(false)
-      } else if (currentScrollY < lastScrollY.current) {
-        // Scrolling up - show buttons
+      } else if (currentScrollY > lastScrollY.current) {
+        // Scrolling down - show buttons
         setShowBottomActions(true)
       }
       

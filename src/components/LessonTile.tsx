@@ -1,6 +1,7 @@
 import React from 'react'
 import { Heart, Share2 } from 'lucide-react'
 import styles from './LessonTile.module.css'
+import lessonImage from '../assets/lesson-image.jpeg'
 
 interface LessonTileProps {
   lesson: {
@@ -15,14 +16,9 @@ const LessonTile: React.FC<LessonTileProps> = ({ lesson }) => {
     <div className={styles.container}>
       <div className={styles.imageContainer}>
         <img 
-          src={lesson.imageUrl} 
+          src={lessonImage} 
           alt={lesson.title} 
           className={styles.image}
-          onError={(e) => {
-            // Fallback to a placeholder if image fails to load
-            const target = e.target as HTMLImageElement;
-            target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzkzIiBoZWlnaHQ9IjE1NyIgdmlld0JveD0iMCAwIDM5MyAxNTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzOTMiIGhlaWdodD0iMTU3IiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE5Ni41IiB5PSI3OC41IiBmb250LWZhbWlseT0iRE0gU2FucyIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZENzY4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UHJlbmRyZSB1biBDYWbDqTwvdGV4dD4KPC9zdmc+';
-          }}
         />
         <div className={styles.gradient} />
         <div className={styles.checkmark}>
