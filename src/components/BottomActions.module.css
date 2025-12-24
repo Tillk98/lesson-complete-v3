@@ -72,8 +72,10 @@
 }
 
 .secondaryButton {
-  background-color: var(--background-default);
-  border: none;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-xs);
   padding: var(--spacing-xs) var(--spacing-md);
   display: flex;
@@ -81,13 +83,14 @@
   justify-content: center;
   gap: var(--spacing-xs);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
   flex: 1;
   min-width: 0;
 }
 
 .secondaryButton:hover {
-  background-color: #e9ecef;
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .buttonIcon {
@@ -100,7 +103,7 @@
 .buttonText {
   font-family: var(--font-family);
   font-size: 16px;
-  font-weight: var(--font-weight-semibold);
+  font-weight: 600;
   line-height: 20px;
   color: var(--text-default);
   flex-shrink: 0;
