@@ -10,3 +10,6 @@ Place the following icon images in this directory:
 - `known-words-icon.png` - Known words "A" icon (blue circle with speech bubble)
 - `level-badge-b2.png` - Level badge "B2" (green triangle)
 
+
+
+

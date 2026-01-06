@@ -83,3 +83,6 @@ The app uses CSS custom properties for consistent theming:
 - The component is fully responsive and optimized for mobile devices (393px width).
 - All animations are CSS-based for optimal performance.
 
+
+
+
