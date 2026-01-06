@@ -4,8 +4,6 @@ import ProgressBar from './ProgressBar'
 import Chart from './Chart'
 import NextLessonTile from './NextLessonTile'
 import styles from './ChatMessage.module.css'
-import lynxIcon from '../assets/lynx-icon.png'
-import reviewIcon from '../assets/review-icon-blue.png'
 import retakeLessonIcon from '../assets/retake-lesson.png'
 import retakeLessonBlueIcon from '../assets/retake-lesson-blue.png'
 import vocabReviewIcon from '../assets/vocab-review.png'
@@ -31,9 +29,7 @@ interface ChatMessageProps {
 const ChatMessage: React.FC<ChatMessageProps> = ({ 
   type, 
   children, 
-  showHeader = false,
   messageId,
-  referencedMessageId,
   referencedContent,
   nextLesson,
   onNextLessonClick,
