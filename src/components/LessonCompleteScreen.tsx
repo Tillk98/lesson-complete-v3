@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import Header from './Header'
 import CelebrationAnimation from './CelebrationAnimation'
 import LessonTile from './LessonTile'
@@ -6,6 +6,7 @@ import StatsSection from './StatsSection'
 import TypingIndicator from './TypingIndicator'
 import ChatMessage from './ChatMessage'
 import BottomActions from './BottomActions'
+import { translateReactNode, type Language } from '../utils/translations'
 import styles from './LessonCompleteScreen.module.css'
 
 interface LessonData {
@@ -44,6 +45,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   const [showHeaderBreadcrumb, setShowHeaderBreadcrumb] = useState(false)
   const [disableAutoScroll, setDisableAutoScroll] = useState(false)
   const [referencedMessage, setReferencedMessage] = useState<{ id: number; content: string } | null>(null)
+  const [language, setLanguage] = useState<Language>('en')
   const chatEndRef = useRef<HTMLDivElement>(null)
   const chatSectionRef = useRef<HTMLDivElement>(null)
   const topSectionRef = useRef<HTMLDivElement>(null)
@@ -250,46 +252,54 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       
       <div className={styles.content} ref={chatSectionRef}>
         <div className={styles.chatSection}>
-          {showTyping && <TypingIndicator />}
+          {showTyping && <TypingIndicator language={language} />}
           
-          {chatMessages.map((message, index) => (
-            <div
-              key={message.id}
-              ref={(el) => {
-                if (el) {
-                  messageRefs.current.set(message.id, el)
-                } else {
-                  messageRefs.current.delete(message.id)
-                }
-              }}
-            >
-              <ChatMessage 
-                type={message.type} 
-                showHeader={index === 0 && message.type !== 'user'}
-                messageId={message.id}
-                referencedMessageId={message.referencedMessageId}
-                referencedContent={message.referencedContent}
-                nextLesson={message.nextLesson}
-                onNextLessonClick={() => {
-                  // Handle navigation to next lesson
-                  console.log('Navigate to next lesson:', message.nextLesson)
-                }}
-                onReviewVocabClick={() => {
-                  // Handle review vocab action
-                  console.log('Review vocab clicked')
-                }}
-                onReviewLessonClick={() => {
-                  // Handle review lesson action
-                  console.log('Review lesson clicked')
-                }}
-                onMessageClick={(messageId, content) => {
-                  setReferencedMessage({ id: messageId, content })
+          {chatMessages.map((message, index) => {
+            // Translate Lynx messages based on current language
+            const translatedContent = message.type !== 'user' 
+              ? translateReactNode(message.content, language)
+              : message.content
+            
+            return (
+              <div
+                key={message.id}
+                ref={(el) => {
+                  if (el) {
+                    messageRefs.current.set(message.id, el)
+                  } else {
+                    messageRefs.current.delete(message.id)
+                  }
                 }}
               >
-                {message.content}
-              </ChatMessage>
-            </div>
-          ))}
+                <ChatMessage 
+                  type={message.type} 
+                  showHeader={index === 0 && message.type !== 'user'}
+                  messageId={message.id}
+                  referencedMessageId={message.referencedMessageId}
+                  referencedContent={message.referencedContent}
+                  language={language}
+                  nextLesson={message.nextLesson}
+                  onNextLessonClick={() => {
+                    // Handle navigation to next lesson
+                    console.log('Navigate to next lesson:', message.nextLesson)
+                  }}
+                  onReviewVocabClick={() => {
+                    // Handle review vocab action
+                    console.log('Review vocab clicked')
+                  }}
+                  onReviewLessonClick={() => {
+                    // Handle review lesson action
+                    console.log('Review lesson clicked')
+                  }}
+                  onMessageClick={(messageId, content) => {
+                    setReferencedMessage({ id: messageId, content })
+                  }}
+                >
+                  {translatedContent}
+                </ChatMessage>
+              </div>
+            )
+          })}
           
           {/* Scroll anchor at the bottom */}
           <div ref={chatEndRef} />
@@ -340,6 +350,8 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         }}
         referencedMessage={referencedMessage}
         onClearReference={() => setReferencedMessage(null)}
+        language={language}
+        onLanguageChange={setLanguage}
       />
     </div>
   )

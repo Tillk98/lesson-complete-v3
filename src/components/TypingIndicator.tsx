@@ -1,7 +1,12 @@
 import React from 'react'
+import { translateText, type Language } from '../utils/translations'
 import styles from './TypingIndicator.module.css'
 
-const TypingIndicator: React.FC = () => {
+interface TypingIndicatorProps {
+  language?: Language
+}
+
+const TypingIndicator: React.FC<TypingIndicatorProps> = ({ language = 'en' }) => {
   return (
     <div className={styles.container}>
       <div className={styles.message}>
@@ -10,7 +15,7 @@ const TypingIndicator: React.FC = () => {
           <span className={styles.dot} />
           <span className={styles.dot} />
         </div>
-        <span className={styles.typingText}>Lynx is thinking...</span>
+        <span className={styles.typingText}>{translateText('Lynx is thinking...', language)}</span>
       </div>
     </div>
   )
