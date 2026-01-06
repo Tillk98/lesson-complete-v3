@@ -5,6 +5,23 @@
   width: 100%;
 }
 
+.container.userContainer {
+  align-items: flex-end;
+}
+
+.container.lynxContainer {
+  align-items: flex-start;
+}
+
+.container.clickable {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.container.clickable:hover {
+  opacity: 0.8;
+}
+
 .lynxHeader {
   display: flex;
   align-items: center;
@@ -34,12 +51,27 @@
 }
 
 .message {
-  background-color: var(--background-accent);
   border-radius: var(--radius-2xs);
-  padding: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  padding-left: 0;
+  padding-right: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.lynxMessage {
+  background-color: transparent;
+  align-self: flex-start;
+  width: 100%;
+}
+
+.userMessage {
+  background-color: var(--background-accent);
+  align-self: flex-end;
+  max-width: 80%;
+  padding: var(--spacing-md);
 }
 
 .heading {
@@ -60,6 +92,43 @@
   line-height: 20px;
   color: var(--text-default);
   margin: 0;
+}
+
+.userMessage .text {
+  text-align: right;
+}
+
+.lynxMessage .text {
+  text-align: left;
+}
+
+.referenceIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.referenceLine {
+  width: 3px;
+  height: 20px;
+  background-color: var(--color-secondary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.referencePreview {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: 16px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
 }
 
 .text em {

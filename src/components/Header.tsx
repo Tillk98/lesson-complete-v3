@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './Header.module.css'
 import lynxIcon from '../assets/lynx-icon.png'
 import coinIcon from '../assets/coin-icon.png'
+import flameIcon from '../assets/flame-icon.png'
 
 interface HeaderProps {
   showBreadcrumb?: boolean
@@ -10,6 +11,7 @@ interface HeaderProps {
     subtitle: string
   }
   stats?: {
+    streak: number
     coins: number
     coinsTotal: number
   }
@@ -64,20 +66,26 @@ const Header: React.FC<HeaderProps> = ({ showBreadcrumb = false, lesson, stats }
               {lesson?.title || 'Prendre un Café'}
             </span>
           </div>
-          <button className={styles.coinsLink}>
-            <img src={coinIcon} alt="Coins" className={styles.coinIcon} />
-            <span className={styles.coinsText}>
-              {stats?.coins || 15}/{stats?.coinsTotal || 100}
-            </span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M9 18l6-6-6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <button className={styles.statsLink}>
+            <div className={styles.streakContainer}>
+              <img src={flameIcon} alt="Streak" className={styles.flameIcon} />
+              <span className={styles.streakText}>{stats?.streak || 5}</span>
+            </div>
+            <div className={styles.coinsContainer}>
+              <img src={coinIcon} alt="Coins" className={styles.coinIcon} />
+              <span className={styles.coinsText}>
+                {stats?.coins || 15}/{stats?.coinsTotal || 100}
+              </span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M9 18l6-6-6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
           </button>
         </div>
       )}

@@ -34,7 +34,7 @@
 }
 
 .message {
-  background-color: var(--background-accent);
+  background-color: transparent;
   border-radius: var(--radius-2xs);
   padding: var(--spacing-md);
   display: flex;

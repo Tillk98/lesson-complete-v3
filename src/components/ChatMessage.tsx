@@ -11,9 +11,12 @@ import retakeLessonBlueIcon from '../assets/retake-lesson-blue.png'
 import vocabReviewIcon from '../assets/vocab-review.png'
 
 interface ChatMessageProps {
-  type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation'
+  type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation' | 'user'
   children: React.ReactNode
   showHeader?: boolean
+  messageId?: number
+  referencedMessageId?: number
+  referencedContent?: string
   nextLesson?: {
     title: string
     subtitle: string
@@ -22,29 +25,73 @@ interface ChatMessageProps {
   onNextLessonClick?: () => void
   onReviewVocabClick?: () => void
   onReviewLessonClick?: () => void
+  onMessageClick?: (messageId: number, content: string) => void
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ 
   type, 
   children, 
   showHeader = false,
+  messageId,
+  referencedMessageId,
+  referencedContent,
   nextLesson,
   onNextLessonClick,
   onReviewVocabClick,
-  onReviewLessonClick
+  onReviewLessonClick,
+  onMessageClick
 }) => {
+  const isUserMessage = type === 'user'
+  
+  const handleClick = () => {
+    if (onMessageClick && messageId !== undefined && type !== 'user') {
+      // Extract text content from children
+      let content = ''
+      if (typeof children === 'string') {
+        content = children
+      } else {
+        const extractText = (node: React.ReactNode): string => {
+          if (typeof node === 'string' || typeof node === 'number') {
+            return String(node)
+          }
+          if (React.isValidElement(node) && node.props.children) {
+            return React.Children.toArray(node.props.children)
+              .map(extractText)
+              .join(' ')
+          }
+          return ''
+        }
+        content = React.Children.toArray(children)
+          .map(extractText)
+          .join(' ')
+      }
+      // Limit preview length and clean up
+      content = content.substring(0, 100).trim()
+      if (content) {
+        onMessageClick(messageId, content)
+      }
+    }
+  }
+  
   return (
-    <div className={styles.container}>
-      {showHeader && (
-        <div className={styles.lynxHeader}>
-          <div className={styles.lynxIcon}>
-            <img src={lynxIcon} alt="Lynx AI" className={styles.lynxImage} />
-          </div>
-          <span className={styles.lynxText}>Lynx AI</span>
-        </div>
-      )}
+    <div 
+      className={`${styles.container} ${isUserMessage ? styles.userContainer : styles.lynxContainer} ${onMessageClick ? styles.clickable : ''}`}
+      onClick={handleClick}
+    >
       
-      <div className={styles.message}>
+      <div className={`${styles.message} ${type === 'user' ? styles.userMessage : styles.lynxMessage}`}>
+        {type === 'user' && (
+          <>
+            {referencedContent && (
+              <div className={styles.referenceIndicator}>
+                <div className={styles.referenceLine} />
+                <span className={styles.referencePreview}>{referencedContent}</span>
+              </div>
+            )}
+            <p className={styles.text}>{children}</p>
+          </>
+        )}
+        
         {type === 'feedback' && (
           <>
             <p className={styles.text}>{children}</p>
@@ -105,6 +152,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
         {type === 'recommendation' && (
           <>
+            <h3 className={styles.heading}>Keep your momentum going! 🚀</h3>
             <p className={styles.text}>{children}</p>
             {nextLesson && (
               <NextLessonTile 

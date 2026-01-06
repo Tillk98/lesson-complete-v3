@@ -40,9 +40,10 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   const [animationPhase, setAnimationPhase] = useState<'celebration' | 'lesson' | 'stats' | 'typing' | 'chat'>('celebration')
   const [showCelebration, setShowCelebration] = useState(true)
   const [showTyping, setShowTyping] = useState(false)
-  const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation'; nextLesson?: LessonData }>>([])
+  const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation' | 'user'; nextLesson?: LessonData; referencedMessageId?: number; referencedContent?: string }>>([])
   const [showHeaderBreadcrumb, setShowHeaderBreadcrumb] = useState(false)
   const [disableAutoScroll, setDisableAutoScroll] = useState(false)
+  const [referencedMessage, setReferencedMessage] = useState<{ id: number; content: string } | null>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
   const chatSectionRef = useRef<HTMLDivElement>(null)
   const topSectionRef = useRef<HTMLDivElement>(null)
@@ -85,7 +86,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       ])
     }, 4000)
 
-    // Phase 5: Second message (insight)
+    // Phase 5: Second message (insight) - faster timing
     const timer5 = setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
@@ -100,7 +101,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           ),
         },
       ])
-    }, 5500)
+    }, 4800) // 800ms after first message
 
     // Phase 6: Chart message
     const timer6 = setTimeout(() => {
@@ -116,7 +117,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           ),
         },
       ])
-    }, 7000)
+    }, 5600) // 800ms after second message
 
     // Phase 7: Improvement message
     const timer7 = setTimeout(() => {
@@ -132,7 +133,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           ),
         },
       ])
-    }, 8500)
+    }, 6400) // 800ms after third message
 
     // Phase 8: Recommendation message
     const timer8 = setTimeout(() => {
@@ -153,7 +154,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           },
         },
       ])
-    }, 10000)
+    }, 7200) // 800ms after fourth message
 
     return () => {
       clearTimeout(timer1)
@@ -167,10 +168,10 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
     }
   }, [])
 
-  // Auto-scroll to center new messages when they appear
+  // Auto-scroll to show new messages when they appear
   useEffect(() => {
     if (chatMessages.length > 0 && !disableAutoScroll) {
-      // Small delay to ensure DOM is updated
+      // Delay to ensure DOM is updated with new message
       setTimeout(() => {
         const lastMessageId = chatMessages[chatMessages.length - 1].id
         const lastMessageElement = messageRefs.current.get(lastMessageId)
@@ -179,15 +180,14 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           // Mark that we're auto-scrolling
           isAutoScrolling.current = true
           
-          // Center the message in the viewport, accounting for bottom actions
+          // Scroll to show the full message at the bottom, accounting for bottom input field
           const elementRect = lastMessageElement.getBoundingClientRect()
           const absoluteElementTop = elementRect.top + window.pageYOffset
-          const bottomActionsHeight = 180 // Approximate height of bottom actions
-          const availableHeight = window.innerHeight - bottomActionsHeight
-          const middle = absoluteElementTop - (availableHeight / 2) + (elementRect.height / 2)
+          const bottomActionsHeight = 200 // Height of bottom input field + padding
+          const scrollPosition = absoluteElementTop + elementRect.height - window.innerHeight + bottomActionsHeight + 20 // Extra padding
           
           window.scrollTo({
-            top: Math.max(0, middle),
+            top: Math.max(0, scrollPosition),
             behavior: 'smooth'
           })
           
@@ -196,7 +196,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
             isAutoScrolling.current = false
           }, 500)
         }
-      }, 200)
+      }, 300) // Slightly longer delay to ensure DOM is fully updated
     }
   }, [chatMessages, disableAutoScroll])
 
@@ -265,7 +265,10 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
             >
               <ChatMessage 
                 type={message.type} 
-                showHeader={index === 0}
+                showHeader={index === 0 && message.type !== 'user'}
+                messageId={message.id}
+                referencedMessageId={message.referencedMessageId}
+                referencedContent={message.referencedContent}
                 nextLesson={message.nextLesson}
                 onNextLessonClick={() => {
                   // Handle navigation to next lesson
@@ -279,6 +282,9 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
                   // Handle review lesson action
                   console.log('Review lesson clicked')
                 }}
+                onMessageClick={(messageId, content) => {
+                  setReferencedMessage({ id: messageId, content })
+                }}
               >
                 {message.content}
               </ChatMessage>
@@ -290,7 +296,51 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         </div>
       </div>
       
-      <BottomActions onScrollToTop={() => setDisableAutoScroll(true)} />
+      <BottomActions 
+        onScrollToTop={() => setDisableAutoScroll(true)}
+        onSendMessage={(message, referencedMessageId) => {
+          const newId = chatMessages.length > 0 ? Math.max(...chatMessages.map(m => m.id)) + 1 : 100
+          const referencedContent = referencedMessage?.content
+          setChatMessages((prev) => [
+            ...prev,
+            {
+              id: newId,
+              type: 'user',
+              content: message,
+              referencedMessageId: referencedMessageId,
+              referencedContent: referencedContent,
+            },
+          ])
+          // Clear reference after sending
+          setReferencedMessage(null)
+          
+          // Scroll to bottom after sending message to show the sent message completely
+          setTimeout(() => {
+            const lastMessageId = newId
+            const lastMessageElement = messageRefs.current.get(lastMessageId)
+            
+            if (lastMessageElement) {
+              const elementRect = lastMessageElement.getBoundingClientRect()
+              const absoluteElementTop = elementRect.top + window.pageYOffset
+              const bottomActionsHeight = 200 // Height of bottom input field + padding
+              const scrollPosition = absoluteElementTop + elementRect.height - window.innerHeight + bottomActionsHeight + 20 // Extra 20px padding
+              
+              window.scrollTo({
+                top: Math.max(0, scrollPosition),
+                behavior: 'smooth'
+              })
+            } else {
+              // Fallback: scroll to very bottom
+              window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: 'smooth'
+              })
+            }
+          }, 200)
+        }}
+        referencedMessage={referencedMessage}
+        onClearReference={() => setReferencedMessage(null)}
+      />
     </div>
   )
 }
