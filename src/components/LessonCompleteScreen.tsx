@@ -40,9 +40,8 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   const [animationPhase, setAnimationPhase] = useState<'celebration' | 'lesson' | 'stats' | 'typing' | 'chat'>('celebration')
   const [showCelebration, setShowCelebration] = useState(true)
   const [showTyping, setShowTyping] = useState(false)
-  const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' }>>([])
+  const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation'; nextLesson?: LessonData }>>([])
   const [showHeaderBreadcrumb, setShowHeaderBreadcrumb] = useState(false)
-  const [showBottomActions, setShowBottomActions] = useState(true)
   const [disableAutoScroll, setDisableAutoScroll] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
   const chatSectionRef = useRef<HTMLDivElement>(null)
@@ -135,6 +134,27 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       ])
     }, 8500)
 
+    // Phase 8: Recommendation message
+    const timer8 = setTimeout(() => {
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          id: 5,
+          type: 'recommendation',
+          content: (
+            <>
+              Based on your progress, I'd recommend continuing with the next lesson. You're doing great, and building on what you've learned will help reinforce these concepts.
+            </>
+          ),
+          nextLesson: {
+            title: 'Au Restaurant',
+            subtitle: 'LingQ Mini Stories - French',
+            imageUrl: '',
+          },
+        },
+      ])
+    }, 10000)
+
     return () => {
       clearTimeout(timer1)
       clearTimeout(timer2)
@@ -143,6 +163,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       clearTimeout(timer5)
       clearTimeout(timer6)
       clearTimeout(timer7)
+      clearTimeout(timer8)
     }
   }, [])
 
@@ -192,20 +213,12 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         setShowHeaderBreadcrumb(topSectionRect.bottom <= headerHeight)
       }
       
-      // Handle bottom actions visibility based on scroll direction
-      // Keep buttons hidden at the top of the page
-      if (currentScrollY <= 100) {
-        setShowBottomActions(false)
-      } else if (currentScrollY < lastScrollY.current) {
-        // Scrolling up - hide buttons
-        setShowBottomActions(false)
-        // If user scrolls up while auto-scrolling, disable auto-scroll
+      // Handle auto-scroll disable when user scrolls up
+      if (currentScrollY < lastScrollY.current) {
+        // Scrolling up - if user scrolls up while auto-scrolling, disable auto-scroll
         if (isAutoScrolling.current) {
           setDisableAutoScroll(true)
         }
-      } else if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - show buttons
-        setShowBottomActions(true)
       }
       
       lastScrollY.current = currentScrollY
@@ -250,7 +263,23 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
                 }
               }}
             >
-              <ChatMessage type={message.type} showHeader={index === 0}>
+              <ChatMessage 
+                type={message.type} 
+                showHeader={index === 0}
+                nextLesson={message.nextLesson}
+                onNextLessonClick={() => {
+                  // Handle navigation to next lesson
+                  console.log('Navigate to next lesson:', message.nextLesson)
+                }}
+                onReviewVocabClick={() => {
+                  // Handle review vocab action
+                  console.log('Review vocab clicked')
+                }}
+                onReviewLessonClick={() => {
+                  // Handle review lesson action
+                  console.log('Review lesson clicked')
+                }}
+              >
                 {message.content}
               </ChatMessage>
             </div>
@@ -261,7 +290,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         </div>
       </div>
       
-      <BottomActions visible={showBottomActions} onScrollToTop={() => setDisableAutoScroll(true)} />
+      <BottomActions onScrollToTop={() => setDisableAutoScroll(true)} />
     </div>
   )
 }

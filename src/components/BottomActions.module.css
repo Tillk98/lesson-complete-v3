@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   background: transparent;
-  padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-md) 0;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -25,7 +25,7 @@
   pointer-events: none;
 }
 
-.primaryButtonWrapper {
+.inputWrapper {
   position: relative;
   width: 100%;
 }
@@ -56,88 +56,60 @@
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.primaryButton {
-  width: 100%;
-  background-color: var(--color-primary);
-  border: none;
-  border-radius: var(--radius-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
+.inputContainer {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--spacing-xs);
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  box-shadow: 0 2px 8px rgba(66, 165, 100, 0.3);
-}
-
-.primaryButton:hover {
-  background-color: #3a9457;
-}
-
-.primaryButton:active {
-  transform: scale(0.98);
-}
-
-.primaryButton span {
-  font-family: var(--font-family);
-  font-size: 16px;
-  font-weight: var(--font-weight-semibold);
-  line-height: 20px;
-  color: var(--text-on-action);
-}
-
-.primaryButton svg {
-  width: 24px;
-  height: 24px;
-  color: var(--text-on-action);
-  flex-shrink: 0;
-}
-
-.secondaryActions {
-  display: flex;
-  gap: var(--spacing-sm);
-  justify-content: center;
-  align-items: stretch;
-  width: 100%;
-}
-
-.secondaryButton {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.inputField {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  line-height: 20px;
+  color: var(--text-default);
+  padding: var(--spacing-xs) 0;
+}
+
+.inputField::placeholder {
+  color: var(--text-muted);
+}
+
+.sendButton {
+  background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
-  flex: 1;
-  min-width: 0;
+  padding: var(--spacing-2xs);
+  transition: transform 0.1s, opacity 0.2s;
+  flex-shrink: 0;
 }
 
-.secondaryButton:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 0.5);
+.sendButton:hover {
+  opacity: 0.8;
 }
 
-.buttonIcon {
+.sendButton:active {
+  transform: scale(0.95);
+}
+
+.sendIconImage {
   width: 24px;
   height: 24px;
   object-fit: contain;
-  flex-shrink: 0;
-}
-
-.buttonText {
-  font-family: var(--font-family);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 20px;
-  color: var(--text-default);
-  flex-shrink: 0;
-  white-space: nowrap;
 }
 
