@@ -7,7 +7,6 @@ interface NextLessonTileProps {
   lesson: {
     title: string
     subtitle: string
-    imageUrl: string
   }
   onClick?: () => void
 }

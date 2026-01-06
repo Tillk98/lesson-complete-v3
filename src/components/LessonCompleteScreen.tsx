@@ -15,6 +15,11 @@ interface LessonData {
   imageUrl: string
 }
 
+interface NextLessonData {
+  title: string
+  subtitle: string
+}
+
 interface Stats {
   streak: number
   coins: number
@@ -41,7 +46,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   const [animationPhase, setAnimationPhase] = useState<'celebration' | 'lesson' | 'stats' | 'typing' | 'chat'>('celebration')
   const [showCelebration, setShowCelebration] = useState(true)
   const [showTyping, setShowTyping] = useState(false)
-  const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation' | 'user'; nextLesson?: LessonData; referencedMessageId?: number; referencedContent?: string }>>([])
+  const [chatMessages, setChatMessages] = useState<Array<{ id: number; content: React.ReactNode; type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation' | 'user'; nextLesson?: NextLessonData; referencedMessageId?: number; referencedContent?: string }>>([])
   const [showHeaderBreadcrumb, setShowHeaderBreadcrumb] = useState(false)
   const [disableAutoScroll, setDisableAutoScroll] = useState(false)
   const [referencedMessage, setReferencedMessage] = useState<{ id: number; content: string } | null>(null)
@@ -149,11 +154,10 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
               Based on your progress, I'd recommend continuing with the next lesson. You're doing great, and building on what you've learned will help reinforce these concepts.
             </>
           ),
-          nextLesson: {
-            title: 'Au Restaurant',
-            subtitle: 'LingQ Mini Stories - French',
-            imageUrl: '',
-          },
+              nextLesson: {
+                title: 'Au Restaurant',
+                subtitle: 'LingQ Mini Stories - French',
+              },
         },
       ])
     }, 7200) // 800ms after fourth message
@@ -254,7 +258,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         <div className={styles.chatSection}>
           {showTyping && <TypingIndicator language={language} />}
           
-          {chatMessages.map((message, index) => {
+          {chatMessages.map((message) => {
             // Translate Lynx messages based on current language
             const translatedContent = message.type !== 'user' 
               ? translateReactNode(message.content, language)
@@ -273,7 +277,6 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
               >
                 <ChatMessage 
                   type={message.type} 
-                  showHeader={index === 0 && message.type !== 'user'}
                   messageId={message.id}
                   referencedMessageId={message.referencedMessageId}
                   referencedContent={message.referencedContent}

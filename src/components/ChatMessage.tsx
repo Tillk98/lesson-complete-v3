@@ -12,7 +12,6 @@ import vocabReviewIcon from '../assets/vocab-review.png'
 interface ChatMessageProps {
   type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation' | 'user'
   children: React.ReactNode
-  showHeader?: boolean
   messageId?: number
   referencedMessageId?: number
   referencedContent?: string
@@ -20,7 +19,6 @@ interface ChatMessageProps {
   nextLesson?: {
     title: string
     subtitle: string
-    imageUrl: string
   }
   onNextLessonClick?: () => void
   onReviewVocabClick?: () => void

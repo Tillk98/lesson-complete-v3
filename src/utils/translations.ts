@@ -10,13 +10,13 @@ const translations: Record<string, { en: string; fr: string }> = {
     fr: 'Lynx réfléchit...',
   },
   
-  // Feedback message (text only, without formatting)
+  // Feedback message - normalized version (without JSX formatting)
   'You finished "Prendre un Café," your third lesson on LingQ – congrats! Most notably, you added 50 new known words. You\'re already 5% into B1 in French 💪': {
     en: 'You finished "Prendre un Café," your third lesson on LingQ – congrats! Most notably, you added 50 new known words. You\'re already 5% into B1 in French 💪',
     fr: 'Vous avez terminé "Prendre un Café", votre troisième leçon sur LingQ – félicitations ! Vous avez notamment ajouté 50 nouveaux mots connus. Vous êtes déjà à 5% du niveau B1 en français 💪',
   },
   
-  // Insight message (text only)
+  // Insight message - normalized version (without JSX formatting)
   'Here are some of your most notable stats from this lesson. You are creating LingQs 2x faster than expanding your known vocabulary – a sign that you\'re actively engaging with challenging content!': {
     en: 'Here are some of your most notable stats from this lesson. You are creating LingQs 2x faster than expanding your known vocabulary – a sign that you\'re actively engaging with challenging content!',
     fr: 'Voici quelques-unes de vos statistiques les plus remarquables de cette leçon. Vous créez des LingQs 2 fois plus vite que vous n\'élargissez votre vocabulaire connu – un signe que vous vous engagez activement avec du contenu stimulant !',
@@ -79,8 +79,22 @@ export const translateText = (text: string, language: Language): string => {
     return translations[text][language]
   }
   
-  // Try to translate React elements by extracting text
-  // For complex content, return original if no translation found
+  // Try to find a partial match (for cases where text is part of a larger message)
+  // Normalize the input text
+  const normalizedInput = normalizeText(text)
+  
+  // Try to find a translation key that contains this text or matches it
+  const matchingKey = Object.keys(translations).find(key => {
+    const normalizedKey = normalizeText(key)
+    // Check if the normalized key matches the normalized input
+    return normalizedKey === normalizedInput
+  })
+  
+  if (matchingKey && translations[matchingKey]) {
+    return translations[matchingKey][language]
+  }
+  
+  // No translation found, return original
   return text
 }
 
@@ -92,9 +106,10 @@ const extractTextFromNode = (node: React.ReactNode): string => {
     return String(node)
   }
   if (React.isValidElement(node) && node.props.children) {
-    return React.Children.toArray(node.props.children)
+    const childrenText = React.Children.toArray(node.props.children)
       .map(extractTextFromNode)
       .join(' ')
+    return childrenText
   }
   if (Array.isArray(node)) {
     return node.map(extractTextFromNode).join(' ')
@@ -102,9 +117,22 @@ const extractTextFromNode = (node: React.ReactNode): string => {
   return ''
 }
 
+// Normalize text for matching (remove extra spaces, normalize quotes)
+const normalizeText = (text: string): string => {
+  return text
+    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+    .replace(/[""]/g, '"') // Normalize quotes
+    .replace(/['']/g, "'") // Normalize apostrophes
+    .trim()
+}
+
 export const translateReactNode = (node: React.ReactNode, language: Language): React.ReactNode => {
   if (typeof node === 'string') {
-    return translateText(node, language)
+    // Try to translate the string directly
+    const translated = translateText(node, language)
+    // If it's part of a larger message, try to find a partial match
+    // For now, just return the translated text
+    return translated
   }
   
   if (typeof node === 'number') {
@@ -112,14 +140,23 @@ export const translateReactNode = (node: React.ReactNode, language: Language): R
   }
   
   if (React.isValidElement(node)) {
-    // For React fragments, extract text and translate if we have a full match
+    // For React fragments, try to match the full text first
     if (node.type === React.Fragment) {
-      const fullText = extractTextFromNode(node).trim()
-      if (fullText && translations[fullText]) {
-        // Return translated text, preserving any formatting if needed
-        return translations[fullText][language]
+      const fullText = normalizeText(extractTextFromNode(node))
+      // Try to find a matching translation key
+      const matchingKey = Object.keys(translations).find(key => {
+        const normalizedKey = normalizeText(key)
+        return normalizedKey === fullText
+      })
+      
+      if (matchingKey && translations[matchingKey]) {
+        // We have a full translation match
+        // Return the translated text directly
+        // This ensures the text is translated, even if we lose JSX formatting
+        return translations[matchingKey][language]
       }
-      // Otherwise, translate children recursively
+      
+      // No exact match, translate children recursively (this preserves JSX structure)
       if (node.props.children) {
         const translatedChildren = React.Children.map(node.props.children, (child) =>
           translateReactNode(child, language)
@@ -129,7 +166,7 @@ export const translateReactNode = (node: React.ReactNode, language: Language): R
       return node
     }
     
-    // For other elements, translate children while preserving structure
+    // For other elements (like <em>, <strong>), translate children while preserving structure
     if (node.props.children) {
       const translatedChildren = React.Children.map(node.props.children, (child) =>
         translateReactNode(child, language)
