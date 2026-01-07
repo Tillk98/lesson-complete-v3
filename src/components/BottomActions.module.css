@@ -1,6 +1,6 @@
 .container {
   position: fixed;
-  bottom: 0;
+  bottom: var(--spacing-md);
   left: 0;
   right: 0;
   background: transparent;
@@ -37,11 +37,11 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1.5px solid #e0e0e0;
   border-bottom: none;
-  border-radius: 12px 12px 0 0;
+  border-radius: 16px 16px 0 0;
   padding: var(--spacing-xs) var(--spacing-sm);
-  margin-bottom: -1px;
+  margin-bottom: -1.5px;
 }
 
 .referenceContent {
@@ -245,9 +245,8 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom: none;
-  border-radius: 12px 12px 0 0;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 16px;
   padding: var(--spacing-xs) var(--spacing-sm);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

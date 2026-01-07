@@ -5,9 +5,7 @@ import Chart from './Chart'
 import NextLessonTile from './NextLessonTile'
 import { translateText, type Language } from '../utils/translations'
 import styles from './ChatMessage.module.css'
-import retakeLessonIcon from '../assets/retake-lesson.png'
 import retakeLessonBlueIcon from '../assets/retake-lesson-blue.png'
-import vocabReviewIcon from '../assets/vocab-review.png'
 
 interface ChatMessageProps {
   type: 'feedback' | 'insight' | 'chart' | 'improvement' | 'recommendation' | 'user'
@@ -21,8 +19,6 @@ interface ChatMessageProps {
     subtitle: string
   }
   onNextLessonClick?: () => void
-  onReviewVocabClick?: () => void
-  onReviewLessonClick?: () => void
   onMessageClick?: (messageId: number, content: string) => void
 }
 
@@ -34,8 +30,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   language = 'en',
   nextLesson,
   onNextLessonClick,
-  onReviewVocabClick,
-  onReviewLessonClick,
   onMessageClick
 }) => {
   const isUserMessage = type === 'user'
@@ -157,16 +151,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 onClick={onNextLessonClick}
               />
             )}
-            <div className={styles.secondaryActions}>
-              <button className={styles.secondaryButton} onClick={onReviewVocabClick}>
-                <img src={vocabReviewIcon} alt="Review Vocab" className={styles.secondaryIconImage} />
-                <div className={styles.secondaryLabel}>{translateText('Review Vocab', language)}</div>
-              </button>
-              <button className={styles.secondaryButton} onClick={onReviewLessonClick}>
-                <img src={retakeLessonIcon} alt="Retake Lesson" className={styles.secondaryIconImage} />
-                <div className={styles.secondaryLabel}>{translateText('Review this Lesson', language)}</div>
-              </button>
-            </div>
           </>
         )}
       </div>

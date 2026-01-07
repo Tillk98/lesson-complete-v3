@@ -286,14 +286,6 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
                     // Handle navigation to next lesson
                     console.log('Navigate to next lesson:', message.nextLesson)
                   }}
-                  onReviewVocabClick={() => {
-                    // Handle review vocab action
-                    console.log('Review vocab clicked')
-                  }}
-                  onReviewLessonClick={() => {
-                    // Handle review lesson action
-                    console.log('Review lesson clicked')
-                  }}
                   onMessageClick={(messageId, content) => {
                     setReferencedMessage({ id: messageId, content })
                   }}
