@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Header from './Header'
+import WebHeader from './WebHeader'
+import SidePanel from './SidePanel'
 import CelebrationAnimation from './CelebrationAnimation'
 import LessonTile from './LessonTile'
-import StatsSection from './StatsSection'
 import TypingIndicator from './TypingIndicator'
 import ChatMessage from './ChatMessage'
 import BottomActions from './BottomActions'
@@ -51,6 +52,54 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   const [disableAutoScroll, setDisableAutoScroll] = useState(false)
   const [referencedMessage, setReferencedMessage] = useState<{ id: number; content: string } | null>(null)
   const [language, setLanguage] = useState<Language>('en')
+  
+  // Helper function to get the scrollable container
+  const getScrollableContainer = (): HTMLElement | Window => {
+    if (window.innerWidth >= 1024) {
+      const webLayout = document.querySelector('[class*="webLayout"]')
+      if (webLayout && webLayout.children.length > 1) {
+        const mainContentDiv = webLayout.children[1] as HTMLElement
+        if (mainContentDiv) {
+          return mainContentDiv
+        }
+      }
+    }
+    return window
+  }
+  
+  // Helper function to scroll to center an element
+  const scrollToCenterElement = (element: HTMLElement) => {
+    const container = getScrollableContainer()
+    const elementRect = element.getBoundingClientRect()
+    
+    if (container === window) {
+      // Mobile: scroll window
+      const absoluteElementTop = elementRect.top + window.pageYOffset
+      const elementHeight = elementRect.height
+      const viewportHeight = window.innerHeight
+      const targetScrollPosition = absoluteElementTop - (viewportHeight / 2) + (elementHeight / 2)
+      
+      window.scrollTo({
+        top: Math.max(0, targetScrollPosition),
+        behavior: 'smooth'
+      })
+    } else {
+      // Web: scroll container
+      const containerEl = container as HTMLElement
+      const containerRect = containerEl.getBoundingClientRect()
+      const containerScrollTop = containerEl.scrollTop
+      const elementTopRelativeToContainer = elementRect.top - containerRect.top + containerScrollTop
+      const elementHeight = elementRect.height
+      const containerHeight = containerEl.clientHeight
+      const targetScrollPosition = elementTopRelativeToContainer - (containerHeight / 2) + (elementHeight / 2)
+      
+      containerEl.scrollTo({
+        top: Math.max(0, targetScrollPosition),
+        behavior: 'smooth'
+      })
+    }
+  }
+  const [sidePanelOpen, setSidePanelOpen] = useState(true)
   const chatEndRef = useRef<HTMLDivElement>(null)
   const chatSectionRef = useRef<HTMLDivElement>(null)
   const topSectionRef = useRef<HTMLDivElement>(null)
@@ -174,7 +223,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
     }
   }, [])
 
-  // Auto-scroll to show new messages when they appear
+  // Auto-scroll to center new messages when they appear
   useEffect(() => {
     if (chatMessages.length > 0 && !disableAutoScroll) {
       // Delay to ensure DOM is updated with new message
@@ -186,16 +235,8 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           // Mark that we're auto-scrolling
           isAutoScrolling.current = true
           
-          // Scroll to show the full message at the bottom, accounting for bottom input field
-          const elementRect = lastMessageElement.getBoundingClientRect()
-          const absoluteElementTop = elementRect.top + window.pageYOffset
-          const bottomActionsHeight = 200 // Height of bottom input field + padding
-          const scrollPosition = absoluteElementTop + elementRect.height - window.innerHeight + bottomActionsHeight + 20 // Extra padding
-          
-          window.scrollTo({
-            top: Math.max(0, scrollPosition),
-            behavior: 'smooth'
-          })
+          // Scroll to center the message
+          scrollToCenterElement(lastMessageElement)
           
           // Reset auto-scrolling flag after scroll animation completes
           setTimeout(() => {
@@ -209,7 +250,14 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
   // Scroll detection for header breadcrumb and bottom actions
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
+      const container = getScrollableContainer()
+      let currentScrollY: number
+      
+      if (container === window) {
+        currentScrollY = window.scrollY
+      } else {
+        currentScrollY = (container as HTMLElement).scrollTop
+      }
       
       // Handle header breadcrumb
       if (topSectionRef.current) {
@@ -230,27 +278,37 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       lastScrollY.current = currentScrollY
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    const container = getScrollableContainer()
+    if (container === window) {
+      window.addEventListener('scroll', handleScroll, { passive: true })
+    } else {
+      (container as HTMLElement).addEventListener('scroll', handleScroll, { passive: true })
+    }
     handleScroll() // Check initial state
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      if (container === window) {
+        window.removeEventListener('scroll', handleScroll)
+      } else {
+        (container as HTMLElement).removeEventListener('scroll', handleScroll)
+      }
     }
   }, [])
 
   return (
     <div className={styles.container}>
-      <Header showBreadcrumb={showHeaderBreadcrumb} lesson={lesson} stats={stats} />
-      
-      {showCelebration && <CelebrationAnimation />}
-      
-      <div className={styles.topSection} ref={topSectionRef}>
+      <WebHeader />
+      <div className={styles.webLayout}>
+        <SidePanel isOpen={sidePanelOpen} onToggle={() => setSidePanelOpen(!sidePanelOpen)} />
+        <div className={`${styles.mainContent} ${sidePanelOpen ? styles.withSidePanel : ''}`}>
+          <div className={styles.contentWrapper}>
+            <Header showBreadcrumb={showHeaderBreadcrumb} lesson={lesson} stats={stats} />
+            
+            {showCelebration && <CelebrationAnimation />}
+        
+            <div className={styles.topSection} ref={topSectionRef}>
         <div className={`${styles.lessonSection} ${animationPhase === 'lesson' || animationPhase === 'stats' || animationPhase === 'typing' || animationPhase === 'chat' ? styles.fadeIn : ''}`}>
           <LessonTile lesson={lesson} />
-        </div>
-        
-        <div className={`${styles.statsSection} ${animationPhase === 'stats' || animationPhase === 'typing' || animationPhase === 'chat' ? styles.fadeIn : ''}`}>
-          <StatsSection stats={stats} />
         </div>
       </div>
       
@@ -302,6 +360,7 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
       </div>
       
       <BottomActions 
+        sidePanelOpen={sidePanelOpen}
         onScrollToTop={() => setDisableAutoScroll(true)}
         onSendMessage={(message, referencedMessageId) => {
           const newId = chatMessages.length > 0 ? Math.max(...chatMessages.map(m => m.id)) + 1 : 100
@@ -319,27 +378,27 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
           // Clear reference after sending
           setReferencedMessage(null)
           
-          // Scroll to bottom after sending message to show the sent message completely
+          // Scroll to center the sent message
           setTimeout(() => {
             const lastMessageId = newId
             const lastMessageElement = messageRefs.current.get(lastMessageId)
             
             if (lastMessageElement) {
-              const elementRect = lastMessageElement.getBoundingClientRect()
-              const absoluteElementTop = elementRect.top + window.pageYOffset
-              const bottomActionsHeight = 200 // Height of bottom input field + padding
-              const scrollPosition = absoluteElementTop + elementRect.height - window.innerHeight + bottomActionsHeight + 20 // Extra 20px padding
-              
-              window.scrollTo({
-                top: Math.max(0, scrollPosition),
-                behavior: 'smooth'
-              })
+              scrollToCenterElement(lastMessageElement)
             } else {
               // Fallback: scroll to very bottom
-              window.scrollTo({
-                top: document.documentElement.scrollHeight,
-                behavior: 'smooth'
-              })
+              const container = getScrollableContainer()
+              if (container === window) {
+                window.scrollTo({
+                  top: document.documentElement.scrollHeight,
+                  behavior: 'smooth'
+                })
+              } else {
+                (container as HTMLElement).scrollTo({
+                  top: (container as HTMLElement).scrollHeight,
+                  behavior: 'smooth'
+                })
+              }
             }
           }, 200)
         }}
@@ -348,6 +407,9 @@ const LessonCompleteScreen: React.FC<LessonCompleteScreenProps> = ({
         language={language}
         onLanguageChange={setLanguage}
       />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

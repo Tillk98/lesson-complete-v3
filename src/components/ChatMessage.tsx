@@ -1,7 +1,7 @@
 import React from 'react'
 import StatTile from './StatTile'
 import ProgressBar from './ProgressBar'
-import Chart from './Chart'
+import ChartWeb from './ChartWeb'
 import NextLessonTile from './NextLessonTile'
 import { translateText, type Language } from '../utils/translations'
 import styles from './ChatMessage.module.css'
@@ -117,7 +117,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           <>
             <h3 className={styles.heading}>{translateText('KNOWN WORDS – FIRST 30 DAYS', language)}</h3>
             <p className={styles.text}>{children}</p>
-            <Chart />
+            <ChartWeb />
           </>
         )}
         

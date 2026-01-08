@@ -1,0 +1,273 @@
+.container {
+  display: none; /* Hidden by default for mobile */
+}
+
+/* Web version: show at 1024px and above */
+@media (min-width: 1024px) {
+  .container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    gap: 8px;
+    padding-right: 16px;
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: 1px solid oklch(0.9209 0.0035 247.86);
+    box-sizing: border-box;
+    color: rgb(9, 26, 47);
+    font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    -webkit-font-smoothing: antialiased;
+    line-height: 24px;
+  }
+}
+
+.sidebarIcon {
+  width: var(--sidebar-width-icon, 60px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menuButton {
+  height: 36px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: inherit;
+  transition: background-color 0.2s;
+}
+
+.menuButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.logo {
+  width: 88px;
+  height: auto;
+  color: inherit;
+}
+
+.rightSection {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.navGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Activity Button */
+.activityButton {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.streakCounter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 8px;
+  padding: 4px 8px 4px 4px;
+  background-color: rgba(9, 26, 47, 0.08);
+  border-radius: 999px;
+  color: rgb(9, 26, 47);
+  transition: background-color 0.2s;
+}
+
+.streakCounter:hover {
+  background-color: rgba(9, 26, 47, 0.12);
+}
+
+.progressWrapper {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressIcon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.progressContent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.progressText {
+  font-weight: 600;
+  font-size: 12px;
+  color: rgb(9, 26, 47);
+}
+
+.chevronWrapper {
+  display: flex;
+  align-items: center;
+  color: rgb(9, 26, 47);
+}
+
+/* Language Selector */
+.languageSelector {
+  position: relative;
+}
+
+.languageButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: rgba(9, 26, 47, 0.08);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  color: rgb(9, 26, 47);
+  transition: background-color 0.2s;
+}
+
+.languageButton:hover {
+  background-color: rgba(9, 26, 47, 0.12);
+}
+
+.flagWrapper {
+  display: flex;
+  align-items: center;
+  width: 39px;
+  height: 39px;
+}
+
+.flagWrapper svg {
+  width: 100%;
+  height: 100%;
+}
+
+.languageText {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.knownWords {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.languageMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background-color: white;
+  border: 1px solid rgba(9, 26, 47, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 4px 8px;
+  min-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.languageList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.languageItem {
+  padding: 0;
+}
+
+.languageLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: rgb(9, 26, 47);
+  transition: background-color 0.2s;
+}
+
+.languageLink:hover {
+  background-color: rgba(9, 26, 47, 0.08);
+}
+
+.flagIcon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.flagIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.languageName {
+  flex: 1;
+  font-size: 14px;
+}
+
+.languageCount {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.divider {
+  height: 2px;
+  background-color: rgba(9, 26, 47, 0.1);
+  border: none;
+  margin: 4px 0;
+}
+
+.addLanguageButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgb(9, 26, 47);
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.addLanguageButton:hover {
+  background-color: rgba(9, 26, 47, 0.08);
+}
+
+.addLanguageButton svg {
+  width: 16px;
+  height: 16px;
+}

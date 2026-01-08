@@ -1,10 +1,10 @@
 .container {
   position: fixed;
-  bottom: var(--spacing-md);
+  bottom: 48px; /* Increased from var(--spacing-md) (16px) to 48px to move up with content padding */
   left: 0;
   right: 0;
   background: transparent;
-  padding: var(--spacing-xl) var(--spacing-md) 0;
+  padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md); /* Added bottom padding to ensure reference tag has room */
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -12,6 +12,40 @@
   max-width: 393px;
   margin: 0 auto;
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  overflow: visible;
+}
+
+/* Web version: full width at 1024px and above */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 48rem; /* 768px - matches content wrapper */
+    width: 100%;
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .container.sidePanelOpen {
+    /* Center 48rem content within available space (after 296px side panel) */
+    left: 296px;
+    right: 0;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .container.sidePanelClosed {
+    /* Center 48rem content within available space (after 64px side panel) */
+    left: 64px;
+    right: 0;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .container.visible {
@@ -30,7 +64,9 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0;
+  overflow: visible;
+  margin-bottom: 0; /* Ensure no bottom margin cutting off content */
 }
 
 .referenceContainer {
@@ -40,8 +76,13 @@
   border: 1.5px solid #e0e0e0;
   border-bottom: none;
   border-radius: 16px 16px 0 0;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-sm);
   margin-bottom: -1.5px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 40px; /* Ensure enough height */
+  display: flex;
+  align-items: center;
 }
 
 .referenceContent {
@@ -49,6 +90,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-xs);
+  width: 100%;
+  flex: 1;
 }
 
 .referenceText {
@@ -103,11 +146,28 @@
   height: 40px;
   z-index: 1;
   color: var(--text-default);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .scrollToTopButton:hover {
   background: rgba(255, 255, 255, 0.85);
   border-color: rgba(255, 255, 255, 0.5);
+}
+
+.modeMenuWrapper {
+  position: absolute;
+  top: -48px;
+  right: 76px; /* Position to the left of language picker with 16px gap */
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  height: 40px;
+}
+
+@media (min-width: 1024px) {
+  .modeMenuWrapper {
+    right: 76px; /* Same spacing for web */
+  }
 }
 
 .languageMenuWrapper {
@@ -118,6 +178,44 @@
   display: flex;
   align-items: flex-end;
   height: 40px;
+}
+
+.modeToggleButton {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2xs);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-default);
+  height: 40px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modeToggleButton:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.modeIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.modeName {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+  line-height: 1;
 }
 
 .languageToggleButton {
@@ -136,6 +234,7 @@
   color: var(--text-default);
   height: 40px;
   box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .languageToggleButton:hover {
@@ -153,6 +252,104 @@
   font-size: 12px;
   font-weight: var(--font-weight-semibold);
   color: var(--text-default);
+  line-height: 1;
+}
+
+.modeMenu {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+  min-width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.8) translateY(10px);
+  transform-origin: bottom right;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.modeMenuOpen {
+  max-height: 400px;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.modeMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.modeMenuItem:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.modeMenuItemSelected {
+  border: 2px solid #22c55e;
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.modeItemContent {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+}
+
+.modeItemIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.modeItemText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.modeItemTitle {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.modeItemDescription {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  color: var(--text-muted);
+  line-height: 16px;
+}
+
+.sparkle {
+  font-size: 14px;
   line-height: 1;
 }
 

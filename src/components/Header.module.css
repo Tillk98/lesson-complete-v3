@@ -160,3 +160,10 @@
   line-height: 18px;
 }
 
+/* Web version: hide mobile header at 1024px and above */
+@media (min-width: 1024px) {
+  .header {
+    display: none;
+  }
+}
+

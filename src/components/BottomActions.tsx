@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import { ArrowUp, Check } from 'lucide-react'
 import styles from './BottomActions.module.css'
 import upArrowIcon from '../assets/up-arrow.png'
+import standardIcon from '../assets/standard.png'
+import plusIcon from '../assets/plus.png'
+import tutorIcon from '../assets/tutor.png'
 
 interface BottomActionsProps {
   visible?: boolean
@@ -11,6 +14,7 @@ interface BottomActionsProps {
   onClearReference?: () => void
   language?: 'en' | 'fr'
   onLanguageChange?: (language: 'en' | 'fr') => void
+  sidePanelOpen?: boolean
 }
 
 const BottomActions: React.FC<BottomActionsProps> = ({ 
@@ -20,14 +24,37 @@ const BottomActions: React.FC<BottomActionsProps> = ({
   referencedMessage,
   onClearReference,
   language = 'en',
-  onLanguageChange
+  onLanguageChange,
+  sidePanelOpen = false
 }) => {
   const [inputValue, setInputValue] = useState('')
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
+  const [isModeMenuOpen, setIsModeMenuOpen] = useState(false)
+  const [currentMode, setCurrentMode] = useState<'standard' | 'plus' | 'tutor'>('standard')
   const languageMenuRef = useRef<HTMLDivElement>(null)
+  const modeMenuRef = useRef<HTMLDivElement>(null)
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    // On web, the main content area is scrollable, not the window
+    if (window.innerWidth >= 1024) {
+      // Find the scrollable main content container
+      // It's the div with overflow-y: auto inside the webLayout
+      const webLayout = document.querySelector('[class*="webLayout"]')
+      if (webLayout && webLayout.children.length > 1) {
+        // Second child should be mainContent (first is SidePanel)
+        const mainContentDiv = webLayout.children[1] as HTMLElement
+        if (mainContentDiv) {
+          mainContentDiv.scrollTo({ top: 0, behavior: 'smooth' })
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    } else {
+      // On mobile, scroll the window
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
     // Disable auto-scroll when user clicks up arrow
     if (onScrollToTop) {
       onScrollToTop()
@@ -52,6 +79,9 @@ const BottomActions: React.FC<BottomActionsProps> = ({
 
   const toggleLanguageMenu = () => {
     setIsLanguageMenuOpen(!isLanguageMenuOpen)
+    if (isModeMenuOpen) {
+      setIsModeMenuOpen(false)
+    }
   }
 
   const handleLanguageSelect = (selectedLanguage: 'en' | 'fr') => {
@@ -61,29 +91,117 @@ const BottomActions: React.FC<BottomActionsProps> = ({
     setIsLanguageMenuOpen(false)
   }
 
-  // Close menu when clicking outside
+  const toggleModeMenu = () => {
+    setIsModeMenuOpen(!isModeMenuOpen)
+    if (isLanguageMenuOpen) {
+      setIsLanguageMenuOpen(false)
+    }
+  }
+
+  const handleModeSelect = (selectedMode: 'standard' | 'plus' | 'tutor') => {
+    setCurrentMode(selectedMode)
+    setIsModeMenuOpen(false)
+  }
+
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (languageMenuRef.current && !languageMenuRef.current.contains(event.target as Node)) {
         setIsLanguageMenuOpen(false)
       }
+      if (modeMenuRef.current && !modeMenuRef.current.contains(event.target as Node)) {
+        setIsModeMenuOpen(false)
+      }
     }
 
-    if (isLanguageMenuOpen) {
+    if (isLanguageMenuOpen || isModeMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside)
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isLanguageMenuOpen])
+  }, [isLanguageMenuOpen, isModeMenuOpen])
 
   return (
-    <div className={`${styles.container} ${visible ? styles.visible : styles.hidden}`}>
+    <div className={`${styles.container} ${visible ? styles.visible : styles.hidden} ${sidePanelOpen ? styles.sidePanelOpen : styles.sidePanelClosed}`}>
       <div className={styles.inputWrapper}>
         <button className={styles.scrollToTopButton} onClick={scrollToTop} aria-label="Scroll to top">
           <ArrowUp size={20} />
         </button>
+        <div className={styles.modeMenuWrapper} ref={modeMenuRef}>
+          {!isModeMenuOpen && (
+            <button 
+              className={styles.modeToggleButton} 
+              onClick={toggleModeMenu} 
+              aria-label="Toggle mode menu"
+              aria-expanded={isModeMenuOpen}
+            >
+              <img 
+                src={currentMode === 'standard' ? standardIcon : currentMode === 'plus' ? plusIcon : tutorIcon} 
+                alt={currentMode}
+                className={styles.modeIcon}
+              />
+              <span className={styles.modeName}>
+                {currentMode === 'standard' ? 'Standard' : currentMode === 'plus' ? 'Plus' : 'Tutor'}
+              </span>
+            </button>
+          )}
+          
+          <div className={`${styles.modeMenu} ${isModeMenuOpen ? styles.modeMenuOpen : ''}`}>
+            <button 
+              className={`${styles.modeMenuItem} ${currentMode === 'standard' ? styles.modeMenuItemSelected : ''}`}
+              onClick={() => handleModeSelect('standard')}
+            >
+              <div className={styles.modeItemContent}>
+                <img src={standardIcon} alt="Standard" className={styles.modeItemIcon} />
+                <div className={styles.modeItemText}>
+                  <span className={styles.modeItemTitle}>Standard</span>
+                  <span className={styles.modeItemDescription}>Conversational AI chatbot</span>
+                </div>
+              </div>
+              {currentMode === 'standard' && (
+                <Check className={styles.checkIcon} size={18} />
+              )}
+            </button>
+            
+            <button 
+              className={`${styles.modeMenuItem} ${currentMode === 'plus' ? styles.modeMenuItemSelected : ''}`}
+              onClick={() => handleModeSelect('plus')}
+            >
+              <div className={styles.modeItemContent}>
+                <img src={plusIcon} alt="Plus" className={styles.modeItemIcon} />
+                <div className={styles.modeItemText}>
+                  <span className={styles.modeItemTitle}>
+                    Plus <span className={styles.sparkle}>✨</span>
+                  </span>
+                  <span className={styles.modeItemDescription}>Chat with enhanced AI engine + voice</span>
+                </div>
+              </div>
+              {currentMode === 'plus' && (
+                <Check className={styles.checkIcon} size={18} />
+              )}
+            </button>
+            
+            <button 
+              className={`${styles.modeMenuItem} ${currentMode === 'tutor' ? styles.modeMenuItemSelected : ''}`}
+              onClick={() => handleModeSelect('tutor')}
+            >
+              <div className={styles.modeItemContent}>
+                <img src={tutorIcon} alt="Tutor" className={styles.modeItemIcon} />
+                <div className={styles.modeItemText}>
+                  <span className={styles.modeItemTitle}>
+                    Tutor <span className={styles.sparkle}>✨</span>
+                  </span>
+                  <span className={styles.modeItemDescription}>Detailed chat with enhanced AI engine + voice</span>
+                </div>
+              </div>
+              {currentMode === 'tutor' && (
+                <Check className={styles.checkIcon} size={18} />
+              )}
+            </button>
+          </div>
+        </div>
         <div className={styles.languageMenuWrapper} ref={languageMenuRef}>
           {!isLanguageMenuOpen && (
             <button 

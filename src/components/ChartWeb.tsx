@@ -1,17 +1,17 @@
 import React from 'react'
-import styles from './Chart.module.css'
+import styles from './ChartWeb.module.css'
 
-const Chart: React.FC = () => {
+const ChartWeb: React.FC = () => {
   // Data points: weekly progression over 4 weeks (30 days)
   // User: 1000 words total, Average: 500 words total
   const weeks = [0, 1, 2, 3, 4] // Week 0 = start, Week 4 = 30 days
   const yourProgress = [0, 200, 450, 750, 1000] // Smooth progression to 1000
   const averageProgress = [0, 100, 200, 350, 500] // Smooth progression to 500
 
-  // Full width, half height
-  const chartHeight = 60 // Half of 120
-  const chartWidth = 100 // ViewBox width (will scale to 100% via CSS)
-  const padding = { top: 8, right: 8, bottom: 20, left: 12 }
+  // Web dimensions: full width, readable height with proper spacing
+  const chartHeight = 240 // Doubled from 120
+  const chartWidth = 800 // Larger viewBox for more space between elements
+  const padding = { top: 40, right: 60, bottom: 50, left: 60 } // Increased padding proportionally
   const graphWidth = chartWidth - padding.left - padding.right
   const graphHeight = chartHeight - padding.top - padding.bottom
   const maxValue = 1200
@@ -48,11 +48,11 @@ const Chart: React.FC = () => {
     <div className={styles.container}>
       <svg
         viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
         className={styles.chart}
       >
         <defs>
-          <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient id="chartGradientWeb" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#3160af" stopOpacity="0.25" />
             <stop offset="100%" stopColor="#3160af" stopOpacity="0.05" />
           </linearGradient>
@@ -97,7 +97,7 @@ const Chart: React.FC = () => {
                 x1={x}
                 y1={padding.top + graphHeight}
                 x2={x}
-                y2={padding.top + graphHeight + 4}
+                y2={padding.top + graphHeight + 3}
                 stroke="#6d7680"
                 strokeWidth="0.5"
               />
@@ -118,7 +118,7 @@ const Chart: React.FC = () => {
         {/* Area under your progress */}
         <path
           d={yourAreaPath}
-          fill="url(#chartGradient)"
+          fill="url(#chartGradientWeb)"
           className={styles.areaAnimation}
         />
 
@@ -153,7 +153,7 @@ const Chart: React.FC = () => {
             r="4"
             fill="#3160af"
             stroke="white"
-            strokeWidth="1.5"
+            strokeWidth="2"
             className={styles.dataPoint}
           />
         ))}
@@ -167,26 +167,26 @@ const Chart: React.FC = () => {
             r="3.5"
             fill="#9ca3af"
             stroke="white"
-            strokeWidth="1.5"
+            strokeWidth="2"
             className={styles.dataPoint}
           />
         ))}
 
         {/* Final value labels */}
         <g className={styles.finalLabels}>
-          <g transform={`translate(${getX(weeks.length - 1) + 8}, ${getY(yourProgress[yourProgress.length - 1])})`}>
+          <g transform={`translate(${getX(weeks.length - 1) + 6}, ${getY(yourProgress[yourProgress.length - 1])})`}>
             <rect
               x="-2"
-              y="-10"
-              width="50"
-              height="16"
-              rx="4"
+              y="-8"
+              width="38"
+              height="14"
+              rx="3"
               fill="#3160af"
               opacity="0.1"
             />
             <text
-              x="23"
-              y="2"
+              x="19"
+              y="3"
               fontSize="11"
               fill="#3160af"
               fontWeight="600"
@@ -196,19 +196,19 @@ const Chart: React.FC = () => {
               1,000
             </text>
           </g>
-          <g transform={`translate(${getX(weeks.length - 1) + 8}, ${getY(averageProgress[averageProgress.length - 1])})`}>
+          <g transform={`translate(${getX(weeks.length - 1) + 6}, ${getY(averageProgress[averageProgress.length - 1])})`}>
             <rect
               x="-2"
-              y="-10"
-              width="45"
-              height="16"
-              rx="4"
+              y="-8"
+              width="35"
+              height="14"
+              rx="3"
               fill="#9ca3af"
               opacity="0.1"
             />
             <text
-              x="20.5"
-              y="2"
+              x="17.5"
+              y="3"
               fontSize="11"
               fill="#6d7680"
               fontWeight="500"
@@ -221,16 +221,16 @@ const Chart: React.FC = () => {
         </g>
 
         {/* Legend */}
-        <g transform={`translate(${padding.left}, ${padding.top - 5})`}>
+        <g transform={`translate(${padding.left}, ${padding.top - 2})`}>
           <g>
-            <line x1={0} y1={6} x2={18} y2={6} stroke="#3160af" strokeWidth="2" strokeLinecap="round" />
-            <text x={22} y={9} fontSize="11" fill="#3160af" fontWeight="500" fontFamily="var(--font-family)">
+            <line x1={0} y1={5} x2={16} y2={5} stroke="#3160af" strokeWidth="2" strokeLinecap="round" />
+            <text x={20} y={9} fontSize="11" fill="#3160af" fontWeight="500" fontFamily="var(--font-family)">
               Your Progress
             </text>
           </g>
           <g transform="translate(0, 16)">
-            <line x1={0} y1={6} x2={18} y2={6} stroke="#9ca3af" strokeWidth="1.5" strokeDasharray="5 5" strokeLinecap="round" />
-            <text x={22} y={9} fontSize="11" fill="#6d7680" fontWeight="400" fontFamily="var(--font-family)">
+            <line x1={0} y1={4} x2={14} y2={4} stroke="#9ca3af" strokeWidth="1.5" strokeDasharray="5 5" strokeLinecap="round" />
+            <text x={18} y={8} fontSize="11" fill="#6d7680" fontWeight="400" fontFamily="var(--font-family)">
               Average Learner
             </text>
           </g>
@@ -240,5 +240,4 @@ const Chart: React.FC = () => {
   )
 }
 
-export default Chart
-
+export default ChartWeb

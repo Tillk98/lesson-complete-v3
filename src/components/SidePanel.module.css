@@ -1,0 +1,229 @@
+.sidePanel {
+  display: none; /* Hidden by default for mobile */
+}
+
+/* Web version: show at 1024px and above */
+@media (min-width: 1024px) {
+  .sidePanel {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    width: 296px;
+    height: calc(100vh - 60px); /* Full height minus header */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 36;
+    border-right: 1px solid oklch(0.9209 0.0035 247.86);
+    box-sizing: border-box;
+    font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    -webkit-font-smoothing: antialiased;
+    line-height: 24px;
+  }
+
+  .sidePanel.closed {
+    width: 64px;
+    overflow: hidden;
+  }
+
+  .sidePanel.open {
+    width: 296px;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  min-height: 64px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+}
+
+.lynxLogo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.headerActions {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+
+.searchButton {
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(9, 26, 47);
+}
+
+.searchInput {
+  background-color: rgb(229, 231, 235);
+  color: rgb(17, 24, 39);
+  border-radius: 0 6px 6px 0;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  outline: none;
+  display: none; /* Hidden by default, can be shown when search is active */
+}
+
+.panelToggle {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  flex: none;
+  min-width: 48px;
+}
+
+.toggleIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.importButtonContainer {
+  display: none; /* Hidden on desktop, shown on mobile */
+}
+
+.importButton {
+  border-radius: 999px;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(22, 163, 74);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.importButton:hover {
+  background-color: rgb(21, 128, 61);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  width: 100%;
+  flex: 1;
+}
+
+.navSection {
+  padding: 8px;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.newChatButton {
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.02);
+  transition: background-color 0.2s;
+}
+
+.newChatButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.newChatText {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(55, 65, 81);
+  margin: 0;
+}
+
+.chatHistory {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.chatGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px;
+  margin-top: 16px;
+}
+
+.chatGroup:first-child {
+  margin-top: 0;
+}
+
+.chatGroupHeader {
+  font-weight: 500;
+  color: rgb(156, 163, 175);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.chatList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chatLink {
+  font-size: 14px;
+  color: rgb(75, 85, 99);
+  text-decoration: none;
+  transition: color 0.2s;
+  line-height: 1.5;
+}
+
+.chatLink:hover {
+  color: rgb(59, 130, 246);
+}

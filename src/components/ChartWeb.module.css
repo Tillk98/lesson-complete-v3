@@ -1,14 +1,14 @@
 .container {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: var(--spacing-xs);
 }
 
 .chart {
   width: 100%;
-  height: 60px; /* Half height: 120px / 2 = 60px */
-  margin: 0 auto;
+  height: auto;
+  max-height: 400px; /* Doubled from 200px */
 }
 
 .areaAnimation {
@@ -79,4 +79,3 @@
     transform: translateX(0);
   }
 }
-

@@ -22,7 +22,7 @@ const LessonTile: React.FC<LessonTileProps> = ({ lesson }) => {
         />
         <div className={styles.gradient} />
         <div className={styles.checkmark}>
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" fill="#42a564" stroke="white" strokeWidth="2" />
             <path
               d="M8 12l2 2 4-4"
@@ -35,7 +35,7 @@ const LessonTile: React.FC<LessonTileProps> = ({ lesson }) => {
         </div>
       </div>
       
-      <div className={styles.content}>
+      <div className={styles.textAndActions}>
         <div className={styles.textContent}>
           <h2 className={styles.title}>{lesson.title}</h2>
           <p className={styles.subtitle}>{lesson.subtitle}</p>

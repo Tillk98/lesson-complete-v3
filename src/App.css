@@ -4,6 +4,14 @@
   background-color: var(--background-page);
 }
 
+/* Web version: ensure full width at 1024px and above */
+@media (min-width: 1024px) {
+  .app {
+    width: 100%;
+    max-width: none;
+  }
+}
+
 
 
 
