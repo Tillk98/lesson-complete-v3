@@ -262,7 +262,10 @@ const BottomActions: React.FC<BottomActionsProps> = ({
         {referencedMessage && (
           <div className={styles.referenceContainer}>
             <div className={styles.referenceContent}>
-              <span className={styles.referenceText}>{referencedMessage.content}</span>
+              <div className={styles.referenceText}>
+                <span className={styles.referenceLabel}>Lynx: </span>
+                <span className={styles.referenceMessage}>{referencedMessage.content}</span>
+              </div>
               <button 
                 className={styles.clearReferenceButton} 
                 onClick={onClearReference}

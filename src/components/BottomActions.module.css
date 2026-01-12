@@ -64,7 +64,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--spacing-xs); /* 8px gap between reference tag and input */
   overflow: visible;
   margin-bottom: 0; /* Ensure no bottom margin cutting off content */
 }
@@ -74,10 +74,8 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1.5px solid #e0e0e0;
-  border-bottom: none;
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px;
   padding: var(--spacing-sm) var(--spacing-sm);
-  margin-bottom: -1.5px;
   width: 100%;
   box-sizing: border-box;
   min-height: 40px; /* Ensure enough height */
@@ -95,15 +93,34 @@
 }
 
 .referenceText {
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  gap: 4px; /* Space between "Lynx:" and message text */
+}
+
+.referenceLabel {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.referenceMessage {
   font-family: var(--font-family);
   font-size: 13px;
   font-weight: var(--font-weight-regular);
   line-height: 16px;
   color: var(--text-muted);
-  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0; /* Allow message to shrink and show ellipsis */
 }
 
 .clearReferenceButton {
